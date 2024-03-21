@@ -81,14 +81,10 @@ def usbdetect():
         print("Mount point: {}".format(mp))
         print_dev_stats(mp)
 
-        images = [f'{path}/{f}' for f in os.listdir(path) if f.endswith('.jpg') or f.endswith('.png')]
+        images = [f'{mp}/{f}' for f in os.listdir(mp) if f.endswith('.jpg') or f.endswith('.png')]
         loop_pics(player, images)
 
 ###### MAIN ######
-usbdetect_p = threading.Thread(target=usbdetect)
-usbdetect_p.daemon = True
-usbdetect_p.start()
-
 context = pyudev.Context()
 monitor = pyudev.Monitor.from_netlink(context)
 monitor.filter_by(subsystem="block", device_type="partition")
@@ -97,6 +93,12 @@ monitor.filter_by(subsystem="block", device_type="partition")
 # Create the player
 player = vlc.MediaPlayer()
 player.set_fullscreen(True)
+
+# Execute daemon process to check USB insert
+usbdetect_p = threading.Thread(target=usbdetect)
+usbdetect_p.daemon = True
+usbdetect_p.start()
+
 # Create the media objects
 video, pics = create_media()
 # Play video for 10 seconds
