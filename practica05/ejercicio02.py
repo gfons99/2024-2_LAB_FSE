@@ -79,11 +79,12 @@ player.set_fullscreen(True)
 video, pics = create_media()
 # Play video for 10 seconds
 play_video(player, video)
-# Play pictures in loop
-loop_pics(player, pics)
 
 # FINI: USBDETECT_2
 while True:
+    # Play pictures in loop
+    loop_pics(player, pics)
+
     action, device = monitor.receive_device()
     if action != "add":
         continue
