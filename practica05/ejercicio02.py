@@ -15,6 +15,7 @@ import pyudev
 import vlc
 import time
 import subprocess as sp
+import threading
 
 home = '/home/gfons/Downloads'
 
@@ -67,6 +68,28 @@ def get_mount_point(path):
     out = cp.stdout.split(" ")[0]
     return out
 
+def usbdetect() {
+    global monitor
+    global player
+    while True:
+        action, device = monitor.receive_device()
+        if action != "add":
+            continue
+        print_dev_info(device)
+        auto_mount("/dev/" + device.sys_name)
+        mp = get_mount_point("/dev/" + device.sys_name)
+        print("Mount point: {}".format(mp))
+        print_dev_stats(mp)
+
+        images = [f'{path}/{f}' for f in os.listdir(path) if f.endswith('.jpg') or f.endswith('.png')]
+        loop_pics(player, images)
+}
+
+###### MAIN ######
+usbdetect_p = threading.Thread(target=usbdetect)
+usbdetect_p.daemon = True
+usbdetect_p.start()
+
 context = pyudev.Context()
 monitor = pyudev.Monitor.from_netlink(context)
 monitor.filter_by(subsystem="block", device_type="partition")
@@ -79,21 +102,5 @@ player.set_fullscreen(True)
 video, pics = create_media()
 # Play video for 10 seconds
 play_video(player, video)
-
-# FINI: USBDETECT_2
-while True:
-    # Play pictures in loop
-    loop_pics(player, pics)
-
-    action, device = monitor.receive_device()
-    if action != "add":
-        continue
-    print_dev_info(device)
-    auto_mount("/dev/" + device.sys_name)
-    mp = get_mount_point("/dev/" + device.sys_name)
-    print("Mount point: {}".format(mp))
-    print_dev_stats(mp)
-
-    images = [f'{path}/{f}' for f in os.listdir(path) if f.endswith('.jpg') or f.endswith('.png')]
-    loop_pics(player, images)
-# FIN: USBDETECT_2
+ # Play pictures in loop
+loop_pics(player, pics)
