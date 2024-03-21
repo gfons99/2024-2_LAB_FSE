@@ -42,6 +42,14 @@ def loop_pics(player, pics):
         time.sleep(3)
         i = (i + 1) % len(pics)
 
+def play_images(player, path):
+    images = [f'{path}/{f}' for f in os.listdir(path) if f.endswith('.jpg') or f.endswith('.png')]
+    while True:
+        for image in images:
+            player.set_media(vlc.Media(image))
+            player.play()
+            time.sleep(3)
+
 # INI: USBDETECT_1
 def print_dev_stats(path):
     photos = []
@@ -81,8 +89,7 @@ def usbdetect():
         print("Mount point: {}".format(mp))
         print_dev_stats(mp)
 
-        images = [f'{mp}/{f}' for f in os.listdir(mp) if f.endswith('.jpg') or f.endswith('.png')]
-        loop_pics(player, images)
+        play_images(player, mp)
 
 ###### MAIN ######
 context = pyudev.Context()
