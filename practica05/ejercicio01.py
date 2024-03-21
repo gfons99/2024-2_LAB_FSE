@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# kyosk.py
-#
+# Title: kyosk.py
 # Author:  Mauricio Matamoros
 # Date:    2023.02.14
 # License: MIT

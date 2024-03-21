@@ -31,8 +31,17 @@ def play_video(player, video):
     player.set_media(video)
     # Play the video
     player.play()
-    # Let the video play for 10 secs
+
+    # Slowly increase volume 0.05x100 = 5 [seconds]
+    for i in range(101):
+        player.audio_set_volume(i)
+        time.sleep(0.05)
+    # Let the video play for n seconds
     time.sleep(10)
+    # Slowly decrease volume 0.05x100 = 5 [seconds]
+    for i in range(100, -1, -1):
+        player.audio_set_volume(i)
+        time.sleep(0.05)
 
 def loop_pics(player, pics):
     i = 0
