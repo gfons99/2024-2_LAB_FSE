@@ -74,7 +74,7 @@ monitor.filter_by(subsystem="block", device_type="partition")
 
 # Create the player
 player = vlc.MediaPlayer()
-player.set_fullscreen(False)
+player.set_fullscreen(True)
 # Create the media objects
 video, pics = create_media()
 # Play video for 10 seconds
