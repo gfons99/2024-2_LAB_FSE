@@ -41,6 +41,7 @@ def loop_pics(player, pics):
 def main():
     # Create the player
     player = vlc.MediaPlayer()
+    player.set_fullscreen(False)
 
     # Create the media objects
     video, pics = create_media()
