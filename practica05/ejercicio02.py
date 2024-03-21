@@ -18,8 +18,7 @@ import subprocess as sp
 import threading
 
 home = '/home/gfons/Downloads'
-b_loop01 = True
-b_loop02 = True
+bandera = True
 
 def create_media():
     video = vlc.Media(f'{home}/videos/video.mp4')
@@ -38,7 +37,7 @@ def play_video(player, video):
 
 def loop_pics(player, pics):
     i = 0
-    while b_loop01:
+    while bandera:
         player.set_media(pics[i])
         player.play()
         time.sleep(3)
@@ -81,7 +80,7 @@ def get_mount_point(path):
 def usbdetect():
     global monitor
     global player
-    global b_loop01
+    global bandera
     while True:
         action, device = monitor.receive_device()
         if action != "add":
@@ -92,7 +91,7 @@ def usbdetect():
         print("Mount point: {}".format(mp))
         print_dev_stats(mp)
 
-        b_loop01 = False
+        bandera = False
         player.stop()
         play_images(player, mp)
 
@@ -115,5 +114,8 @@ usbdetect_p.start()
 video, pics = create_media()
 # Play video for 10 seconds
 play_video(player, video)
- # Play pictures in loop
+# Play pictures in loop
 loop_pics(player, pics)
+# Keep main thread alive
+while True:
+    pass
