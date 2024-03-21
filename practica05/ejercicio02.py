@@ -68,7 +68,7 @@ def get_mount_point(path):
     out = cp.stdout.split(" ")[0]
     return out
 
-def usbdetect() {
+def usbdetect():
     global monitor
     global player
     while True:
@@ -83,7 +83,6 @@ def usbdetect() {
 
         images = [f'{path}/{f}' for f in os.listdir(path) if f.endswith('.jpg') or f.endswith('.png')]
         loop_pics(player, images)
-}
 
 ###### MAIN ######
 usbdetect_p = threading.Thread(target=usbdetect)
