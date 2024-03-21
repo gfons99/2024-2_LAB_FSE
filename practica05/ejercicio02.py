@@ -89,6 +89,7 @@ def usbdetect():
         print("Mount point: {}".format(mp))
         print_dev_stats(mp)
 
+        player.stop()
         play_images(player, mp)
 
 ###### MAIN ######
