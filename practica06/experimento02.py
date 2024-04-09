@@ -56,13 +56,16 @@ def plot_temperatures():
                 if len(parts) == 2:
                     timestamp = float(parts[0])
                     temperature = float(parts[1].strip('()°C,'))
-                    timestamps.append(timestamp)
+                    time_str = time.strftime('%H:%M:%S', time.localtime(timestamp))
+                    timestamps.append(time_str)
                     temperatures.append(temperature)
         plt.plot(timestamps, temperatures)
-        plt.xlabel('Timestamp')
+        plt.xlabel('Time of Day')
         plt.ylabel('Temperature (°C)')
         plt.title('Historical Temperature')
+        plt.xticks(rotation=45)
         plt.grid(True)
+        plt.tight_layout()
         plt.show()
     except Exception as e:
         print("Error plotting temperatures:", e)
