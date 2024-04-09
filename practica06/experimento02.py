@@ -66,7 +66,7 @@ def plot_temperatures():
         plt.ylabel('Temperature (°C)')
         plt.title('Historical Temperature')
         plt.xticks(rotation=45)
-        plt.ylim(0, 50)  # Set y-axis limits
+        plt.ylim(20, 40)  # Set y-axis limits
         plt.grid(True)
         plt.tight_layout()
         plt.pause(0.01)  # Pause to update the plot
