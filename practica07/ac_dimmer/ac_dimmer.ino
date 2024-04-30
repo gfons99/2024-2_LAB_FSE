@@ -1,3 +1,10 @@
+// ****************************************
+// profesor/author: Mauricio Matamoros
+// student/editor: F.R., G.M.
+// date: 2024-04
+// description: Controlar la intensidad de una lámpara de AC.
+// ****************************************
+
 #include <Wire.h>
 
 // Digital 2 is Pin 2 on UNO
@@ -65,7 +72,7 @@ void i2c_received_handler(int count){
   // Interpret the array of bytes as a float value
   float receivedFloat = *((float*)float_num);
   // Print the received float value
-  Serial.println(receivedFloat);
+  // Serial.println(receivedFloat);
   power = receivedFloat;
 }
 
@@ -96,8 +103,7 @@ void turnLampOn(){
 }
 
 void loop(){
-  char buffer[20];
-  sprintf(buffer, "Power = %.2f\n", power);
-  Serial.write(buffer);
+  Serial.print("Power = ");
+  Serial.println(power);
   delay(1000);
 }
