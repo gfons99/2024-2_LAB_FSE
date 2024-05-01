@@ -14,20 +14,19 @@
 
 // Constants
 #define I2C_SLAVE_ADDR 0x0A
+#define BOARD_LED 13
 
 // Globals
 volatile bool flag = false;
 int pdelay = 0;
 int inc = 1;
 float power = 0;
-int power_percent = 0;
-int cont = 0;
 
 // Prototypes
-void zxhandle(void);
-
+void turnLampOn(float power_100);
 void i2c_received_handler(int count);
 void i2c_request_handler(int count);
+void zxhandle(void);
 
 /**
 * Setup the Arduino
@@ -36,9 +35,11 @@ void setup(void){
   // Setup interrupt pin (input)
   pinMode(ZXPIN, INPUT);
   // Attach interrupt to pin 2 (interrupt 0) for zero-cross detection
-  attachInterrupt(digitalPinToInterrupt(ZXPIN), zxhandle, RISING);
+  attachInterrupt(0, zxhandle, RISING);
   // Setup output (triac) pin
   pinMode(TRIAC, OUTPUT);
+  // Blink LED on interrupt
+  pinMode(BOARD_LED, OUTPUT);
   
   // Configure I2C to run in slave mode with the defined address
   Wire.begin(I2C_SLAVE_ADDR);
@@ -72,34 +73,37 @@ void i2c_received_handler(int count){
   float receivedFloat = *((float*)float_num);
   // Print the received float value
   // Serial.println(receivedFloat);
-  // power = receivedFloat;
-  power_percent = (int)receivedFloat;
+  power = receivedFloat;
 }
 
 /**
 * Handles zero-cross detection interrupt
-* attachInterrupt(0, zxhandle, RISING);
 */
 void zxhandle(){
-  // Serial.println("Cruce uwu");
+  flag = true;
+  // TRIAC automatically shuts down on zero-cross
   digitalWrite(TRIAC, LOW);
-  if (power_percent != 0){
-    delayMicroseconds((100 - power_percent) * 80);
-    digitalWrite(TRIAC, HIGH);
-  }
-  // f= 60 Hz // T = 0.016 [s] = 16000 [us]
-  // En cada cruce por cero:
-  // 8000 [us]  -> 100%
-  // 80 [us]    -> 1%
+  digitalWrite(BOARD_LED, LOW);
+
+  delayMicroseconds(pdelay);
+
+  // if(pdelay > 0) turnLampOn();
+}
+
+/**
+* Turns the lamp on
+*/
+void turnLampOn(float power_100){
+  // Map the power percentage (0 to 100) to the corresponding voltage (0V to 5V)
+  int triacVoltage = map(power_100, 0, 100, 0, 255); // Scale to a range of 0 to 255
+  // Set the output voltage of the TRIAC pin based on the scaled power percentage
+  analogWrite(TRIAC, triacVoltage);
 }
 
 void loop(){
   Serial.print("Power = ");
-  Serial.print(power_percent);
-  Serial.println("%");
+  Serial.println(power);
 
-  Serial.print("T encendido = ");
-  Serial.print(power_percent * 80);
-  Serial.println(" [us]");
+  turnLampOn(power);
   delay(1000);
 }
